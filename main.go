@@ -107,13 +107,13 @@ func getLocation() []Location {
 		host, port, user, password, dbname)
 	db, err := sql.Open("postgres", psqlInfo)
 	if err != nil {
-		fmt.Println("Problem connecting to postgres db")
+		fmt.Println("Problem with opening the database")
 	}
 	defer db.Close()
 
 	err = db.Ping()
 	if err != nil {
-		panic(err)
+		fmt.Println("Problem with pinging the database")
 	}
 
 	fmt.Println("Successfully connected!")
@@ -127,7 +127,7 @@ func getLocation() []Location {
 		var spot Location
 		err = rows.Scan(&spot.Id, &spot.Name, &spot.Lat, &spot.Long)
 		if err != nil {
-			panic(err)
+			fmt.Println("Problem  with scanning rows")
 		}
 
 		listLocation = append(listLocation, spot)
@@ -136,13 +136,15 @@ func getLocation() []Location {
 
 	err = rows.Err()
 	if err != nil {
-		panic(err)
+		fmt.Println("Problem  with rows")
 
 	}
 
 	return listLocation
 
 }
+
+//TODO decide if you want to print the rrors or to log them
 
 func windAtLocation(x, y string) WindConditions {
 	start := time.Now()
@@ -245,13 +247,13 @@ func populateConditions(list []Location) {
 			host, port, user, password, dbname)
 		db, err := sql.Open("postgres", psqlInfo)
 		if err != nil {
-			fmt.Println("Problem connecting to postgres aka surfspots")
+			fmt.Println("Problem with opening postgres aka surfspots")
 		}
 		defer db.Close()
 
 		err = db.Ping()
 		if err != nil {
-			panic(err)
+			fmt.Println("Problem with pinging db")
 		}
 
 		for i, u := range listW {
@@ -291,7 +293,7 @@ func getSurfable() []Surfable {
 
 	err = db.Ping()
 	if err != nil {
-		panic(err)
+		fmt.Println("Problem with pinging db")
 	}
 
 	fmt.Println("Successfully connected!")
@@ -307,7 +309,7 @@ func getSurfable() []Surfable {
 
 		err = rows.Scan(&entry.Id, &entry.Spot_id, &entry.Name, &entry.Time, &entry.Swell, &entry.Wind, &entry.Surfable)
 		if err != nil {
-			panic(err)
+			fmt.Println("Problem  with scanning rows")
 		}
 		whenSurfable := &entry.Time
 		if whenSurfable.After(today) {
@@ -318,7 +320,7 @@ func getSurfable() []Surfable {
 
 	err = rows.Err()
 	if err != nil {
-		panic(err)
+		fmt.Println("Problem  with  rows")
 
 	}
 
@@ -330,11 +332,11 @@ func calculateDistance(point1, point2 string, userLat, userLong float64) float64
 	const PI float64 = 3.141592653589793
 	p1, err := strconv.ParseFloat(point1, 64)
 	if err != nil {
-		panic(err)
+		fmt.Println("Problem  with parsing float for distance calculateion")
 	}
 	p2, err := strconv.ParseFloat(point2, 64)
 	if err != nil {
-		panic(err)
+		fmt.Println("Problem  with parsing float for distance calculateion")
 	}
 
 	radlat1 := float64(PI * p1 / 180)
